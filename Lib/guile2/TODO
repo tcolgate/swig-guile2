@@ -1,0 +1,3 @@
+The main job here is to rebase this code on current scm_* calls, remove all the *2* stuff
+and remove the reliance on the gh interface.
+
