@@ -1223,6 +1223,122 @@ AC_SUBST(GUILE_GH_INTERFACE)
 AC_SUBST(GUILE_SCM_INTERFACE)
 
 #----------------------------------------------------------------
+# Look for Guile 2
+#----------------------------------------------------------------
+
+GUILE2PACKAGE=
+GUILE2INCLUDE=
+GUILE2=
+GUILE2LIB=
+GUILE2LINK=
+GUILE2PKGDATADIR=
+
+AC_ARG_WITH(guile2-config,AS_HELP_STRING([--without-guile2], [Disable Guile2])
+AS_HELP_STRING([--with-guile2-config=path], [Set location of guile-config for guile 2]),[ GUILE2_CONFIG="$withval"], [GUILE2_CONFIG=])
+AC_ARG_WITH(guilepackage2, AS_HELP_STRING([--with-guile2-prefix=path], [Set location of Guile 2 tree]),[
+	GUILE2PACKAGE="$withval"])
+AC_ARG_WITH(guile2,[  --with-guile2=path       Set location of Guile executable],[
+	GUILE2="$withval"], [GUILE2=yes])
+AC_ARG_WITH(guile2incl,[  --with-guile2incl=path   Set location of Guile include directory],[
+	GUILE2INCLUDE="$withval"])
+AC_ARG_WITH(guile2lib,[  --with-guile2lib=path    Set location of Guile library directory],[
+	GUILE2LIB="$withval"])
+
+# First, check for "--without-guile2" or "--with-guile2=no".
+if test x"${GUILE2}" = xno -o x"${with_alllang}" = xno ; then 
+AC_MSG_NOTICE([Disabling Guile2])
+else
+
+if test -z "$GUILE2_CONFIG" ; then
+  AC_PATH_PROG(GUILE2_CONFIG, guile-config)
+fi
+
+if test -n "$GUILE_CONFIG" ; then
+  GUILE2PACKAGE="`$GUILE_CONFIG info prefix`"
+  GUILE2INCLUDE="`$GUILE_CONFIG info includedir`"
+  GUILE2LIB="`$GUILE_CONFIG info libdir`"
+  GUILE2="`$GUILE_CONFIG info bindir`/guile"
+  GUILE2COMPILE="`$GUILE_CONFIG compile`"
+  GUILE2LINK="`$GUILE_CONFIG link`"
+  GUILE2PKGDATADIR="`$GUILE_CONFIG info pkgdatadir`"
+fi
+
+  if test -z "$GUILE2" -o "x$GUILE2" = xyes; then
+     if test -n "$GUILE2PACKAGE"; then
+  	GUILE="$GUILE2PACKAGE/bin/guile"
+     else
+  	GUILE=
+     fi
+  fi
+
+  if test -z "$GUILE2COMPILE"; then
+    if test -z "$GUILE2INCLUDE"; then
+       if test -n "$GUILE2PACKAGE"; then
+    	  GUILEINCLUDE="$GUILE2PACKAGE/include"
+       fi
+    fi
+
+    if test -z "$GUILE2LIB"; then
+       if test -n "$GUILE2PACKAGE"; then
+    	  GUILELIB="$GUILE2PACKAGE/lib"
+       fi
+    fi
+
+
+    AC_MSG_CHECKING(for Guile2 header files)
+
+    dirs="$GUILE2INCLUDE"
+    for i in $dirs ; do
+  	  if test -r $i/guile/2.0/libguile.h; then
+  		AC_MSG_RESULT($i)
+  		GUILE2INCLUDE="$ISYSTEM$i"
+  		break
+  	  fi
+    done
+    if test -z "$GUILE2INCLUDE"; then
+      	AC_MSG_RESULT(not found)
+    fi
+
+    AC_MSG_CHECKING(for Guile library)
+    dirs="$GUILE2LIB"
+    for i in $dirs ; do
+  	  if test -r $i/libguile-2.0.so; then
+  	    AC_MSG_RESULT($i)
+  	    GUILE2LIB="$i"
+  	    break
+  	  fi
+    done
+    if test -z "$GUILE2LIB"; then
+  	AC_MSG_RESULT(not found)
+    fi
+  GUILE2COMPILE="$CFLAGS $GUILE2INCLUDE"
+fi
+
+if test -z "$GUILE2LINK"; then
+  GUILELINK="-L$GUILE2LIB -lguile-2.0"
+fi
+
+guilesafe_CFLAGS=$CFLAGS
+CFLAGS="`echo $CFLAGS | sed 's/-ansi//g;s/-pedantic//g;'` $GUILE2COMPILE"
+LIBS="$LIBS $GUILE2LINK"
+
+AC_MSG_CHECKING(whether Guile 2 SCM_ API works)
+AC_LINK_IFELSE([#include <libguile.h>
+  int main() { SCM s = SCM_UNSPECIFIED; scm_slot_exists_p(SCM_BOOL_F, SCM_BOOL_F); return scm_c_string_length(s);}], GUILE2_SCM_INTERFACE=1, )
+if test -n "$GUILE2_SCM_INTERFACE" ; then
+        AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+CFLAGS=$guilesafe_CFLAGS
+fi
+
+AC_SUBST(GUILE2)
+AC_SUBST(GUILE2COMPILE)
+AC_SUBST(GUILE2LINK)
+AC_SUBST(GUILE2_SCM_INTERFACE)
+
+#----------------------------------------------------------------
 # Look for MzScheme
 #----------------------------------------------------------------
 
