@@ -60,26 +60,26 @@
 
 %typemap(throws) SWIGTYPE {
   $&ltype temp = new $ltype($1);
-  scm_throw(gh_symbol2scm((char *) "swig-exception"),
-	    gh_list(SWIG_NewPointerObj(temp, $&descriptor, 1),
+  scm_throw(scm_take_locale_symbol((char *) "swig-exception"),
+	    scm_list(SWIG_NewPointerObj(temp, $&descriptor, 1),
 		    SCM_UNDEFINED));
 }
 
 %typemap(throws) SWIGTYPE & {
-  scm_throw(gh_symbol2scm((char *) "swig-exception"),
-	    gh_list(SWIG_NewPointerObj(&$1, $descriptor, 1),
+  scm_throw(scm_take_locale_symbol((char *) "swig-exception"),
+	    scm_list(SWIG_NewPointerObj(&$1, $descriptor, 1),
 		    SCM_UNDEFINED));
 }
 
 %typemap(throws) SWIGTYPE * {
-  scm_throw(gh_symbol2scm((char *) "swig-exception"),
-	    gh_list(SWIG_NewPointerObj($1, $descriptor, 1),
+  scm_throw(scm_take_locale_symbol((char *) "swig-exception"),
+	    scm_list(SWIG_NewPointerObj($1, $descriptor, 1),
 		    SCM_UNDEFINED));
 }
 
 %typemap(throws) SWIGTYPE [] {
-  scm_throw(gh_symbol2scm((char *) "swig-exception"),
-	    gh_list(SWIG_NewPointerObj($1, $descriptor, 1),
+  scm_throw(scm_take_locale_symbol((char *) "swig-exception"),
+	    scm_list(SWIG_NewPointerObj($1, $descriptor, 1),
 		    SCM_UNDEFINED));
 }
 
@@ -146,7 +146,7 @@
 
 /* Enums */
 
-%typemap(in)     enum SWIGTYPE  { $1 = ($1_type) gh_scm2int($input); }
+%typemap(in)     enum SWIGTYPE  { $1 = ($1_type) scm_to_signed_integer($input); }
 /* The complicated construction below needed to deal with anonymous
    enums, which cannot be cast to. */
 %typemap(varin)  enum SWIGTYPE  {
@@ -156,13 +156,13 @@
 	      (char *) "enum variable '$name' cannot be set",
 	      SCM_EOL, SCM_BOOL_F); 
   }
-  * (int *) &($1) = gh_scm2int($input);
+  * (int *) &($1) = scm_to_signed_integer($input);
 }
-%typemap(out)    enum SWIGTYPE  { $result = gh_int2scm($1); }
-%typemap(varout) enum SWIGTYPE  { $result = gh_int2scm($1); }
+%typemap(out)    enum SWIGTYPE  { $result = scm_from_int($1); }
+%typemap(varout) enum SWIGTYPE  { $result = scm_from_int($1); }
 %typemap(throws) enum SWIGTYPE {
-  scm_throw(gh_symbol2scm((char *) "swig-exception"),
-     gh_list(gh_int2scm($1), SCM_UNDEFINED));
+  scm_throw(scm_take_locale_symbol((char *) "swig-exception"),
+     scm_list(scm_from_int($1), SCM_UNDEFINED));
 }
 
 /* The SIMPLE_MAP_WITH_EXPR macro below defines the whole set of
@@ -210,8 +210,8 @@
  /* Throw typemap */
  %typemap(throws) C_NAME {
    C_NAME swig_c_value = $1;
-   scm_throw(gh_symbol2scm((char *) "swig-exception"),
-	     gh_list(C_TO_SCM_EXPR, SCM_UNDEFINED));
+   scm_throw(scm_take_locale_symbol((char *) "swig-exception"),
+	     scm_list(C_TO_SCM_EXPR, SCM_UNDEFINED));
  }
 %enddef
 
@@ -254,34 +254,30 @@
  }
  /* Throw typemap */
  %typemap(throws) C_NAME {
-   scm_throw(gh_symbol2scm((char *) "swig-exception"),
-	     gh_list(C_TO_SCM($1), SCM_UNDEFINED));
+   scm_throw(scm_take_locale_symbol((char *) "swig-exception"),
+	     scm_list(C_TO_SCM($1), SCM_UNDEFINED));
  }
 %enddef
 
- SIMPLE_MAP(bool, gh_scm2bool, gh_bool2scm, boolean);
- SIMPLE_MAP(char, gh_scm2char, gh_char2scm, char);
- SIMPLE_MAP(unsigned char, gh_scm2char, gh_char2scm, char);
- SIMPLE_MAP(signed char, gh_scm2char, gh_char2scm, char);
- SIMPLE_MAP(int, gh_scm2int, gh_int2scm, integer);
- SIMPLE_MAP(short, gh_scm2short, gh_int2scm, integer);
- SIMPLE_MAP(long, gh_scm2long, gh_long2scm, integer);
- SIMPLE_MAP(ptrdiff_t, gh_scm2long, gh_long2scm, integer);
- SIMPLE_MAP(unsigned int, gh_scm2uint, gh_ulong2scm, integer);
- SIMPLE_MAP(unsigned short, gh_scm2ushort, gh_ulong2scm, integer);
- SIMPLE_MAP(unsigned long, gh_scm2ulong, gh_ulong2scm, integer);
- SIMPLE_MAP(size_t, gh_scm2ulong, gh_ulong2scm, integer);
- SIMPLE_MAP(float, gh_scm2double, gh_double2scm, real);
- SIMPLE_MAP(double, gh_scm2double, gh_double2scm, real);
-// SIMPLE_MAP(char *, SWIG_scm2str, gh_str02scm, string);
-// SIMPLE_MAP(const char *, SWIG_scm2str, gh_str02scm, string);
+ SIMPLE_MAP(bool, scm_to_bool, scm_from_bool, boolean);
+ SIMPLE_MAP(char, scm_to_char, scm_from_char, char);
+ SIMPLE_MAP(unsigned char, scm_to_uchar, scm_from_uchar, char);
+ SIMPLE_MAP(signed char, scm_to_schar, scm_from_schar, char);
+ SIMPLE_MAP(int, scm_to_signed_integer, scm_from_signed_integer, integer);
+ SIMPLE_MAP(short, scm_to_short, scm_from_short, integer);
+ SIMPLE_MAP(long, scm_to_long, scm_from_long, integer);
+ SIMPLE_MAP(ptrdiff_t, scm_to_long, scm_from_long, integer);
+ SIMPLE_MAP(unsigned int, scm_to_unsigned_integer, scm_from_unsigned_integer, integer);
+ SIMPLE_MAP(unsigned short, scm_to_ushort, scm_from_ushort, integer);
+ SIMPLE_MAP(unsigned long, scm_to_ulong, scm_from_ulong, integer);
+ SIMPLE_MAP(size_t, scm_to_size_t, scm_from_size_5, integer);
+ SIMPLE_MAP(float, scm_to_double, scm_from_double, real);
+ SIMPLE_MAP(double, scm_to_double, scm_from_double, real);
+ SIMPLE_MAP(long long, scm_to_long_long, scm_from_long_long, integer);
+ SIMPLE_MAP(unsigned long long, scm_to_ulong_long, scm_from_ulong_long, integer);
+// SIMPLE_MAP(char *, scm_from_locale_string, scm_to_locale_string, string);
+// SIMPLE_MAP(const char *, scm_take_locale_string, scm_to_locale_string, string);
 
-/* Define long long typemaps -- uses functions that are only defined
-   in recent versions of Guile, availability also depends on Guile's
-   configuration. */
-
-SIMPLE_MAP(long long, gh_scm2long_long, gh_long_long2scm, integer);
-SIMPLE_MAP(unsigned long long, gh_scm2ulong_long, gh_ulong_long2scm, integer);
 
 /* Strings */
 
@@ -290,8 +286,8 @@ SIMPLE_MAP(unsigned long long, gh_scm2ulong_long, gh_ulong_long2scm, integer);
   must_free = 1;
  }
  %typemap (varin,  doc="NEW-VALUE is a string")  char * {$1 = ($1_ltype)SWIG_scm2str($input);}
- %typemap (out,    doc="<string>")              char * {$result = gh_str02scm((const char *)$1);}
- %typemap (varout, doc="<string>")              char * {$result = gh_str02scm($1);}
+ %typemap (out,    doc="<string>")              char * {$result = scm_from_locale_string((const char *)$1);}
+ %typemap (varout, doc="<string>")              char * {$result = scm_from_locale_string($1);}
  %typemap (in, doc="$NAME is a string")          char * *INPUT(char * temp, int must_free = 0) {
    temp = (char *) SWIG_scm2str($input); $1 = &temp;
    must_free = 1;
@@ -299,7 +295,7 @@ SIMPLE_MAP(unsigned long long, gh_scm2ulong_long, gh_ulong_long2scm, integer);
  %typemap (in,numinputs=0)  char * *OUTPUT (char * temp)
    {$1 = &temp;}
  %typemap (argout,doc="$NAME (a string)") char * *OUTPUT
-   {SWIG_APPEND_VALUE(gh_str02scm(*$1));}
+   {SWIG_APPEND_VALUE(scm_from_locale_string(*$1));}
  %typemap (in)          char * *BOTH = char * *INPUT;
  %typemap (argout)      char * *BOTH = char * *OUTPUT;
  %typemap (in)          char * *INOUT = char * *INPUT;
@@ -329,8 +325,8 @@ SIMPLE_MAP(unsigned long long, gh_scm2ulong_long, gh_ulong_long2scm, integer);
 }
 
 %typemap(throws) char * {
-  scm_throw(gh_symbol2scm((char *) "swig-exception"),
-	    gh_list(gh_str02scm($1), SCM_UNDEFINED));
+  scm_throw(scm_take_locale_symbol((char *) "swig-exception"),
+	    scm_list(scm_from_locale_string($1), SCM_UNDEFINED));
 }
 
 /* Void */
@@ -350,7 +346,7 @@ typedef unsigned long SCM;
 
 %typemap(in) (char *STRING, int LENGTH), (char *STRING, size_t LENGTH) {
     size_t temp;
-    $1 = ($1_ltype) gh_scm2newstr($input, &temp);
+    $1 = ($1_ltype) scm_to_locale_stringn($input, &temp);
     $2 = ($2_ltype) temp;
 }
 

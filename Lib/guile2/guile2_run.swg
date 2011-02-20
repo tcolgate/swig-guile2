@@ -23,9 +23,9 @@ typedef struct swig_guile_clientdata {
 #define SWIG_scm2str(s) \
   SWIG_Guile_scm2newstr(s, NULL)
 #define SWIG_malloc(size) \
-  SCM_MUST_MALLOC(size)
+  scm_malloc(size)
 #define SWIG_free(mem) \
-  scm_must_free(mem)
+  free(mem)
 #define SWIG_ConvertPtr(s, result, type, flags) \
   SWIG_Guile_ConvertPtr(s, result, type, flags)
 #define SWIG_MustGetPtr(s, type, argnum, flags) \

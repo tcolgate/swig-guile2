@@ -32,11 +32,6 @@
       else									\
             gswig_result = scm_append(scm_listify(gswig_result, scm_listify(object, SCM_UNDEFINED), SCM_UNDEFINED));		\
     }
-    /* used by Lib/exception.i */
-    #define gh_symbol2scm scm_str2symbol
-    /* useb by Lib/cdata.i */
-    #define gh_str2scm scm_mem2string
-
 %}
 
 %insert(init) "swiginit.swg"
