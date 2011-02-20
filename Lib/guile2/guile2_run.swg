@@ -60,19 +60,11 @@ static swig_module_info *SWIG_Guile_GetModule(void);
 SWIGINTERN char *
 SWIG_Guile_scm2newstr(SCM str, size_t *len) {
 #define FUNC_NAME "SWIG_Guile_scm2newstr"
-  char *ret;
   size_t l;
 
-  SCM_ASSERT (SCM_STRINGP(str), str, 1, FUNC_NAME);
-  
-  l = SCM_STRING_LENGTH(str);
-  ret = (char *) SWIG_malloc( (l + 1) * sizeof(char));
-  if (!ret) return NULL;
+  SCM_ASSERT (scm_string_p(str), str, 1, FUNC_NAME);
+  return scm_to_locale_string( str );
 
-  memcpy(ret, SCM_STRING_CHARS(str), l);
-  ret[l] = '\0';
-  if (len) *len = l;
-  return ret;
 #undef FUNC_NAME
 }
 
@@ -426,13 +418,13 @@ SWIG_Guile_GetModule(void)
 
   module = SWIG_Guile_Init();
 
-  variable = scm_sym2var(scm_str2symbol("swig-type-list-address" SWIG_RUNTIME_VERSION SWIG_TYPE_TABLE_NAME),
+  variable = scm_sym2var(scm_from_locale_symbol("swig-type-list-address" SWIG_RUNTIME_VERSION SWIG_TYPE_TABLE_NAME),
 			       scm_module_lookup_closure(module),
 			       SCM_BOOL_T);
   if (SCM_UNBNDP(SCM_VARIABLE_REF(variable))) {
     return NULL;
   } else {
-    return (swig_module_info *) scm_num2ulong(SCM_VARIABLE_REF(variable), 0, "SWIG_Guile_Init");
+    return (swig_module_info *) scm_to_ulong(SCM_VARIABLE_REF(variable), 0, "SWIG_Guile_Init");
   }
 }
 
@@ -444,11 +436,11 @@ SWIG_Guile_SetModule(swig_module_info *swig_module)
 
   module = SWIG_Guile_Init();
     
-  variable = scm_sym2var(scm_str2symbol("swig-type-list-address" SWIG_RUNTIME_VERSION SWIG_TYPE_TABLE_NAME),
+  variable = scm_sym2var(scm_from_locale_symbol("swig-type-list-address" SWIG_RUNTIME_VERSION SWIG_TYPE_TABLE_NAME),
 			       scm_module_lookup_closure(module),
 			       SCM_BOOL_T);
 
-  SCM_VARIABLE_SET(variable, scm_ulong2num((unsigned long) swig_module));
+  SCM_VARIABLE_SET(variable, scm_from_ulong((unsigned long) swig_module));
 }
 
 SWIGINTERN int
@@ -460,7 +452,7 @@ SWIG_Guile_GetArgs (SCM *dest, SCM rest,
   int num_args_passed = 0;
   for (i = 0; i<reqargs; i++) {
     if (!SCM_CONSP(rest))
-      scm_wrong_num_args(scm_makfrom0str((char *) procname));
+      scm_wrong_num_args(from_locale_string((char *) procname));
     *dest++ = SCM_CAR(rest);
     rest = SCM_CDR(rest);
     num_args_passed++;
@@ -473,7 +465,7 @@ SWIG_Guile_GetArgs (SCM *dest, SCM rest,
   for (; i<optargs; i++)
     *dest++ = SCM_UNDEFINED;
   if (!SCM_NULLP(rest))
-    scm_wrong_num_args(scm_makfrom0str((char *) procname));
+    scm_wrong_num_args(scm_from_locale_string((char *) procname));
   return num_args_passed;
 }
 
