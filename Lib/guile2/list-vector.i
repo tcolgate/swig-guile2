@@ -203,8 +203,8 @@
 TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(bool, scm_to_bool, scm_from_bool, boolean);
 TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(char, scm_to_char, scm_from_char, char);
 TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(unsigned char, scm_to_char, scm_from_char, char);
-TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(int, scm_to_signed_integer, scm_from_signed_integer, integer);
-TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(short, scm_to_signed_integer, scm_from_signed_integer, integer);
+TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(int, scm_to_int, scm_from_signed_integer, integer);
+TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(short, scm_to_int, scm_from_signed_integer, integer);
 TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(long, scm_to_long, scm_from_long, integer);
 TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(ptrdiff_t, scm_to_long, scm_from_long, integer);
 TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(unsigned int, scm_to_ulong, scm_from_ulong, integer);
@@ -452,8 +452,8 @@ TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(const char *, scm_to_locale_string, scm_from_lo
 TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(bool, scm_to_bool, scm_from_bool, boolean);
 TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(char, scm_to_char, scm_from_char, char);
 TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(unsigned char, scm_to_uchar, scm_from_char, char);
-TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(int, scm_to_signed_integer, scm_from_signed_integer, integer);
-TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(short, scm_to_signed_integer, scm_from_signed_integer, integer);
+TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(int, scm_to_int, scm_from_signed_integer, integer);
+TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(short, scm_to_int, scm_from_signed_integer, integer);
 TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(long, scm_to_long, scm_from_long, integer);
 TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(ptrdiff_t, scm_to_long, scm_from_long, integer);
 TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(unsigned int, scm_to_ulong, scm_from_ulong, integer);

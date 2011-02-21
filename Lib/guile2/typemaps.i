@@ -146,7 +146,7 @@
 
 /* Enums */
 
-%typemap(in)     enum SWIGTYPE  { $1 = ($1_type) scm_to_signed_integer($input); }
+%typemap(in)     enum SWIGTYPE  { $1 = ($1_type) scm_to_int($input); }
 /* The complicated construction below needed to deal with anonymous
    enums, which cannot be cast to. */
 %typemap(varin)  enum SWIGTYPE  {
@@ -156,7 +156,7 @@
 	      (char *) "enum variable '$name' cannot be set",
 	      SCM_EOL, SCM_BOOL_F); 
   }
-  * (int *) &($1) = scm_to_signed_integer($input);
+  * (int *) &($1) = scm_to_int($input);
 }
 %typemap(out)    enum SWIGTYPE  { $result = scm_from_int($1); }
 %typemap(varout) enum SWIGTYPE  { $result = scm_from_int($1); }
@@ -263,11 +263,11 @@
  SIMPLE_MAP(char, scm_to_char, scm_from_char, char);
  SIMPLE_MAP(unsigned char, scm_to_uchar, scm_from_uchar, char);
  SIMPLE_MAP(signed char, scm_to_schar, scm_from_schar, char);
- SIMPLE_MAP(int, scm_to_signed_integer, scm_from_signed_integer, integer);
+ SIMPLE_MAP(int, scm_to_int, scm_from_signed_integer, integer);
  SIMPLE_MAP(short, scm_to_short, scm_from_short, integer);
  SIMPLE_MAP(long, scm_to_long, scm_from_long, integer);
  SIMPLE_MAP(ptrdiff_t, scm_to_long, scm_from_long, integer);
- SIMPLE_MAP(unsigned int, scm_to_unsigned_integer, scm_from_unsigned_integer, integer);
+ SIMPLE_MAP(unsigned int, scm_to_uint, scm_from_unsigned_integer, integer);
  SIMPLE_MAP(unsigned short, scm_to_ushort, scm_from_ushort, integer);
  SIMPLE_MAP(unsigned long, scm_to_ulong, scm_from_ulong, integer);
  SIMPLE_MAP(size_t, scm_to_size_t, scm_from_size_5, integer);
