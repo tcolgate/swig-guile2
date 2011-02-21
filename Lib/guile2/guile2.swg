@@ -9,7 +9,7 @@
 
 %runtime "swigrun.swg"       // Common C API type-checking code
 
-%runtime "guile_scm_run.swg"
+%runtime "guile2_run.swg"
 %include <ghinterface.i>
 %include <guile.i>
 
