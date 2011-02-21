@@ -42,7 +42,7 @@ typedef struct swig_guile_clientdata {
   SWIG_Guile_IsPointer(object)
 #define SWIG_contract_assert(expr, msg)				\
   if (!(expr))							\
-    scm_error(scm_str2symbol("swig-contract-assertion-failed"),	\
+    scm_error(scm_from_locale_symbol("swig-contract-assertion-failed"),	\
 	      (char *) FUNC_NAME, (char *) msg,			\
 	      SCM_EOL, SCM_BOOL_F); else
 
@@ -353,17 +353,17 @@ ensure_smob_tag(SCM swig_module,
 		const char *smob_name,
 		const char *scheme_variable_name)
 {
-  SCM variable = scm_sym2var(scm_str2symbol(scheme_variable_name),
+  SCM variable = scm_sym2var(scm_from_locale_symbol(scheme_variable_name),
 			     scm_module_lookup_closure(swig_module),
 			     SCM_BOOL_T);
   if (SCM_UNBNDP(SCM_VARIABLE_REF(variable))) {
     *tag_variable = scm_make_smob_type((char*)scheme_variable_name, 0);
     SCM_VARIABLE_SET(variable,
-		     scm_ulong2num(*tag_variable));
+		     scm_from_ulong(*tag_variable));
     return 1;
   }
   else {
-    *tag_variable = scm_num2ulong(SCM_VARIABLE_REF(variable), 0,
+    *tag_variable = scm_to_ulong(SCM_VARIABLE_REF(variable), 0,
 				  "SWIG_Guile_Init");
     return 0;
   }
@@ -400,9 +400,9 @@ SWIG_Guile_Init ()
     scm_set_smob_free(swig_member_function_tag, free_swig_member_function);
   }
   swig_make_func = scm_permanent_object(
-  scm_variable_ref(scm_c_module_lookup(scm_c_resolve_module("oop goops"), "make")));
-  swig_keyword = scm_permanent_object(scm_c_make_keyword((char*) "init-smob"));
-  swig_symbol = scm_permanent_object(scm_str2symbol("swig-smob"));
+    scm_variable_ref(scm_c_module_lookup(scm_c_resolve_module("oop goops"), "make")));
+  swig_keyword = scm_permanent_object(scm_from_locale_keyword((char*) "init-smob"));
+  swig_symbol = scm_permanent_object(scm_from_locale_synbol("swig-smob"));
 #ifdef SWIG_INIT_RUNTIME_MODULE
   SWIG_INIT_RUNTIME_MODULE
 #endif
