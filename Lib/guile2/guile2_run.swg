@@ -363,8 +363,7 @@ ensure_smob_tag(SCM swig_module,
     return 1;
   }
   else {
-    *tag_variable = scm_to_ulong(SCM_VARIABLE_REF(variable), 0,
-				  "SWIG_Guile_Init");
+    *tag_variable = scm_to_ulong(SCM_VARIABLE_REF(variable));
     return 0;
   }
 }
@@ -402,7 +401,7 @@ SWIG_Guile_Init ()
   swig_make_func = scm_permanent_object(
     scm_variable_ref(scm_c_module_lookup(scm_c_resolve_module("oop goops"), "make")));
   swig_keyword = scm_permanent_object(scm_from_locale_keyword((char*) "init-smob"));
-  swig_symbol = scm_permanent_object(scm_from_locale_synbol("swig-smob"));
+  swig_symbol = scm_permanent_object(scm_from_locale_symbol("swig-smob"));
 #ifdef SWIG_INIT_RUNTIME_MODULE
   SWIG_INIT_RUNTIME_MODULE
 #endif
@@ -424,7 +423,7 @@ SWIG_Guile_GetModule(void)
   if (SCM_UNBNDP(SCM_VARIABLE_REF(variable))) {
     return NULL;
   } else {
-    return (swig_module_info *) scm_to_ulong(SCM_VARIABLE_REF(variable), 0, "SWIG_Guile_Init");
+    return (swig_module_info *) scm_to_ulong(SCM_VARIABLE_REF(variable));
   }
 }
 
@@ -452,7 +451,7 @@ SWIG_Guile_GetArgs (SCM *dest, SCM rest,
   int num_args_passed = 0;
   for (i = 0; i<reqargs; i++) {
     if (!SCM_CONSP(rest))
-      scm_wrong_num_args(from_locale_string((char *) procname));
+      scm_wrong_num_args(scm_from_locale_string((char *) procname));
     *dest++ = SCM_CAR(rest);
     rest = SCM_CDR(rest);
     num_args_passed++;

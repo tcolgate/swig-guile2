@@ -270,7 +270,7 @@
  SIMPLE_MAP(unsigned int, scm_to_uint, scm_from_unsigned_integer, integer);
  SIMPLE_MAP(unsigned short, scm_to_ushort, scm_from_ushort, integer);
  SIMPLE_MAP(unsigned long, scm_to_ulong, scm_from_ulong, integer);
- SIMPLE_MAP(size_t, scm_to_size_t, scm_from_size_5, integer);
+ SIMPLE_MAP(size_t, scm_to_size_t, scm_from_size_t, integer);
  SIMPLE_MAP(float, scm_to_double, scm_from_double, real);
  SIMPLE_MAP(double, scm_to_double, scm_from_double, real);
  SIMPLE_MAP(long long, scm_to_long_long, scm_from_long_long, integer);
