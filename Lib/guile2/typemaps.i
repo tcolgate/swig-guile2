@@ -260,9 +260,9 @@
 %enddef
 
  SIMPLE_MAP(bool, scm_to_bool, scm_from_bool, boolean);
- SIMPLE_MAP(char, scm_to_char, scm_from_char, char);
- SIMPLE_MAP(unsigned char, scm_to_uchar, scm_from_uchar, char);
- SIMPLE_MAP(signed char, scm_to_schar, scm_from_schar, char);
+ SIMPLE_MAP(char, scm_to_char, SCM_MAKE_CHAR , char);
+ SIMPLE_MAP(unsigned char, scm_to_uchar, SCM_MAKE_CHAR , char);
+ SIMPLE_MAP(signed char, scm_to_schar, SCM_MAKE_CHAR , char);
  SIMPLE_MAP(int, scm_to_int, scm_from_signed_integer, integer);
  SIMPLE_MAP(short, scm_to_short, scm_from_short, integer);
  SIMPLE_MAP(long, scm_to_long, scm_from_long, integer);
