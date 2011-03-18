@@ -337,6 +337,12 @@ case $host in
    *) GUILE_SO=$SO;;
 esac
 
+AC_SUBST(GUILE2_SO)
+case $host in
+   *-*-darwin*) GUILE2_SO=.so;;
+   *) GUILE2_SO=$SO;;
+esac
+
 AC_SUBST(PHP_SO)
 case $host in
    *-*-darwin*) PHP_SO=.so;;
@@ -1253,14 +1259,14 @@ if test -z "$GUILE2_CONFIG" ; then
   AC_PATH_PROG(GUILE2_CONFIG, guile-config)
 fi
 
-if test -n "$GUILE_CONFIG" ; then
-  GUILE2PACKAGE="`$GUILE_CONFIG info prefix`"
-  GUILE2INCLUDE="`$GUILE_CONFIG info includedir`"
-  GUILE2LIB="`$GUILE_CONFIG info libdir`"
-  GUILE2="`$GUILE_CONFIG info bindir`/guile"
-  GUILE2COMPILE="`$GUILE_CONFIG compile`"
-  GUILE2LINK="`$GUILE_CONFIG link`"
-  GUILE2PKGDATADIR="`$GUILE_CONFIG info pkgdatadir`"
+if test -n "$GUILE2_CONFIG" ; then
+  GUILE2PACKAGE="`$GUILE2_CONFIG info prefix`"
+  GUILE2INCLUDE="`$GUILE2_CONFIG info includedir`"
+  GUILE2LIB="`$GUILE2_CONFIG info libdir`"
+  GUILE2="`$GUILE2_CONFIG info exec_prefix`/bin/guile"
+  GUILE2COMPILE="`$GUILE2_CONFIG compile`"
+  GUILE2LINK="`$GUILE2_CONFIG link`"
+  GUILE2PKGDATADIR="`$GUILE2_CONFIG info pkgdatadir`"
 fi
 
   if test -z "$GUILE2" -o "x$GUILE2" = xyes; then
@@ -1274,13 +1280,13 @@ fi
   if test -z "$GUILE2COMPILE"; then
     if test -z "$GUILE2INCLUDE"; then
        if test -n "$GUILE2PACKAGE"; then
-    	  GUILEINCLUDE="$GUILE2PACKAGE/include"
+    	  GUILE2INCLUDE="$GUILE2PACKAGE/include"
        fi
     fi
 
     if test -z "$GUILE2LIB"; then
        if test -n "$GUILE2PACKAGE"; then
-    	  GUILELIB="$GUILE2PACKAGE/lib"
+    	  GUILE2LIB="$GUILE2PACKAGE/lib"
        fi
     fi
 
@@ -1315,10 +1321,10 @@ fi
 fi
 
 if test -z "$GUILE2LINK"; then
-  GUILELINK="-L$GUILE2LIB -lguile-2.0"
+  GUILE2LINK="-L$GUILE2LIB -lguile-2.0"
 fi
 
-guilesafe_CFLAGS=$CFLAGS
+guile2safe_CFLAGS=$CFLAGS
 CFLAGS="`echo $CFLAGS | sed 's/-ansi//g;s/-pedantic//g;'` $GUILE2COMPILE"
 LIBS="$LIBS $GUILE2LINK"
 
@@ -1330,7 +1336,7 @@ if test -n "$GUILE2_SCM_INTERFACE" ; then
 else
 	AC_MSG_RESULT(no)
 fi
-CFLAGS=$guilesafe_CFLAGS
+CFLAGS=$guile2safe_CFLAGS
 fi
 
 AC_SUBST(GUILE2)

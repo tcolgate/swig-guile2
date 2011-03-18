@@ -463,8 +463,8 @@ guile_clean:
 ##################################################################
 
 # Make sure these locate your Guile installation
-GUILE2_INCLUDE = @GUILE2INCLUDE@
-GUILE2_LIB     = @GUILE2LIB@
+GUILE2_INCLUDE = @GUILE2COMPILE@
+GUILE2_LIB     = @GUILE2LINK@
 GUILE2_SO      = @GUILE2_SO@
 GUILE2_LIBPREFIX = lib
 
@@ -472,12 +472,12 @@ GUILE2_LIBPREFIX = lib
 # Build a dynamically loaded module with passive linkage and the scm interface
 #------------------------------------------------------------------
 guile2: $(SRCS)
-	$(SWIG) -guile2 -scm -Linkage passive $(SWIGOPT) $(INTERFACEPATH)
+	$(SWIG) -guile2 -Linkage passive $(SWIGOPT) $(INTERFACEPATH)
 	$(CC) -c $(CCSHARED) $(CFLAGS) $(INCLUDES) $(GUILE2_INCLUDE) $(ISRCS) $(SRCS)
 	$(LDSHARED) $(CFLAGS) $(OBJS) $(IOBJS) $(LIBS) -o $(GUILE2_LIBPREFIX)$(TARGET)$(GUILE2_SO)
 
 guile2_cpp: $(SRCS)
-	$(SWIG) -c++ -guile2 -scm -Linkage passive $(SWIGOPT) $(INTERFACEPATH)
+	$(SWIG) -c++ -guile2 -Linkage passive $(SWIGOPT) $(INTERFACEPATH)
 	$(CXX) -c $(CCSHARED) $(CFLAGS) $(INCLUDES) $(GUILE2_INCLUDE) $(ICXXSRCS) $(SRCS) $(CXXSRCS)
 	$(CXXSHARED) $(CFLAGS) $(OBJS) $(IOBJS) $(LIBS) $(CPP_DLLIBS) -o $(GUILE2_LIBPREFIX)$(TARGET)$(GUILE2_SO)
 
