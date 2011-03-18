@@ -2288,6 +2288,12 @@ if test -z "$GUILEINCLUDE" || test -z "$GUILELIB" || test -z "$GUILE_SCM_INTERFA
 fi
 AC_SUBST(SKIP_GUILESCM)
 
+SKIP_GUILE2=
+if test -z "$GUILE2INCLUDE" || test -z "$GUILE2LIB" ; then
+    SKIP_GUILE2="1"
+fi
+AC_SUBST(SKIP_GUILE2)
+
 
 SKIP_MZSCHEME=
 if test -z "$MZC" || test -z "$MZDYNOBJ" ; then
@@ -2450,12 +2456,14 @@ AC_CONFIG_FILES([			        \
     Source/Makefile			        \
     Examples/Makefile			        \
     Examples/guile/Makefile		        \
+    Examples/guile2/Makefile		        \
     Examples/xml/Makefile		        \
     Examples/test-suite/chicken/Makefile	\
     Examples/test-suite/csharp/Makefile	        \
     Examples/test-suite/d/Makefile	        \
     Examples/test-suite/guile/Makefile	        \
     Examples/test-suite/guilescm/Makefile	\
+    Examples/test-suite/guile2/Makefile		\
     Examples/test-suite/java/Makefile	        \
     Examples/test-suite/mzscheme/Makefile	\
     Examples/test-suite/ocaml/Makefile	        \

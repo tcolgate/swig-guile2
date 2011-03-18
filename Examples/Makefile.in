@@ -87,6 +87,7 @@ OBJS      = $(SRCS:.c=.@OBJEXT@) $(CXXSRCS:.cxx=.@OBJEXT@)
 distclean:
 	rm -f Makefile
 	rm -f guile/Makefile
+	rm -f guile2/Makefile
 	rm -f xml/Makefile
 
 ##################################################################
@@ -456,6 +457,42 @@ guile_clean:
 	rm -f *_wrap* *~ .~* my-guile@EXEEXT@ $(TARGET)@EXEEXT@
 	rm -f core @EXTRA_CLEAN@
 	rm -f *.@OBJEXT@ *@GUILE_SO@
+
+##################################################################
+#####                       GUILE2                           ######
+##################################################################
+
+# Make sure these locate your Guile installation
+GUILE2_INCLUDE = @GUILE2INCLUDE@
+GUILE2_LIB     = @GUILE2LIB@
+GUILE2_SO      = @GUILE2_SO@
+GUILE2_LIBPREFIX = lib
+
+#------------------------------------------------------------------
+# Build a dynamically loaded module with passive linkage and the scm interface
+#------------------------------------------------------------------
+guile2: $(SRCS)
+	$(SWIG) -guile2 -scm -Linkage passive $(SWIGOPT) $(INTERFACEPATH)
+	$(CC) -c $(CCSHARED) $(CFLAGS) $(INCLUDES) $(GUILE2_INCLUDE) $(ISRCS) $(SRCS)
+	$(LDSHARED) $(CFLAGS) $(OBJS) $(IOBJS) $(LIBS) -o $(GUILE2_LIBPREFIX)$(TARGET)$(GUILE2_SO)
+
+guile2_cpp: $(SRCS)
+	$(SWIG) -c++ -guile2 -scm -Linkage passive $(SWIGOPT) $(INTERFACEPATH)
+	$(CXX) -c $(CCSHARED) $(CFLAGS) $(INCLUDES) $(GUILE2_INCLUDE) $(ICXXSRCS) $(SRCS) $(CXXSRCS)
+	$(CXXSHARED) $(CFLAGS) $(OBJS) $(IOBJS) $(LIBS) $(CPP_DLLIBS) -o $(GUILE2_LIBPREFIX)$(TARGET)$(GUILE2_SO)
+
+guile2_externalhdr:
+	$(SWIG) -guile2 -external-runtime $(TARGET)
+
+
+# -----------------------------------------------------------------
+# Cleaning the Guile2 examples
+# -----------------------------------------------------------------
+
+guile2_clean:
+	rm -f *_wrap* *~ .~* my-guile2@EXEEXT@ $(TARGET)@EXEEXT@
+	rm -f core @EXTRA_CLEAN@
+	rm -f *.@OBJEXT@ *@GUILE2_SO@
 
 ##################################################################
 #####                       JAVA                            ######
