@@ -368,6 +368,59 @@ ensure_smob_tag(SCM swig_module,
   }
 }
 
+SWIGINTERN void
+init_Swig_common(void *data)
+{
+  scm_c_use_module("oop goops");
+  scm_c_use_module("Swig swigrun");
+
+  scm_c_eval_string("(define-class <swig-metaclass> (<class>)"
+                    "  (new-function #:init-value #f))");
+
+  scm_c_eval_string("(define-method (initialize (class <swig-metaclass>) initargs)"
+                    "  (slot-set! class 'new-function "
+                    "             (get-keyword #:new-function initargs #f)) (next-method))");
+
+  scm_c_eval_string("(define-class <swig> ()"
+                    "  (swig-smob #:init-value #f) #:metaclass <swig-metaclass>)");
+
+  scm_c_eval_string("(define-method (initialize (obj <swig>) initargs)"
+                    "  (next-method)"
+                    "  (slot-set! obj 'swig-smob"
+                    "    (let ((arg (get-keyword #:init-smob initargs #f)))"
+                    "      (if arg"
+                    "          arg"
+                    "          (let ((ret (apply (slot-ref (class-of obj) 'new-function) "
+                    "                            (get-keyword #:args initargs '()))))"
+                    "            (if (slot-exists? ret 'swig-smob)"
+                    "              (slot-ref ret 'swig-smob)"
+                    "              ret))))))");
+
+  scm_c_eval_string("(define (display-address o file)"
+                    "    (display (number->string (object-address o) 16) file))");
+
+  scm_c_eval_string("(define (display-pointer-address o file)"
+                    "  (let ((address (false-if-exception (SWIG-PointerAddress o))))"
+                    "    (if address"
+                    "      (begin"
+                    "        (display \" @ \" file)"
+                    "        (display (number->string address 16) file)))))");
+
+  scm_c_eval_string("(define-method (write (o <swig>) file)"
+                    "  (let ((class (class-of o)))"
+                    "    (if (slot-bound? class 'name)"
+                    "       (begin"
+                    "          (display \"#<\" file)"
+                    "          (display (class-name class) file)"
+                    "          (display #\\space file)"
+                    "          (display-address o file)"
+                    "          (display-pointer-address o file)"
+                    "          (display \">\" file))"
+                    "        (next-method))))");
+
+  scm_c_export("<swig-metaclass>", "<swig>", NULL);
+};
+
 SWIGINTERN SCM
 SWIG_Guile_Init ()
 {
@@ -376,7 +429,12 @@ SWIG_Guile_Init ()
   if (swig_initialized) return swig_module;
   swig_initialized = 1;
 
+  swig_module = scm_c_define_module("Swig swigrun", NULL, NULL);
+
+  scm_c_define_module("Swig common", init_Swig_common, NULL);
+
   swig_module = scm_c_resolve_module("Swig swigrun");
+
   if (ensure_smob_tag(swig_module, &swig_tag,
 		      "swig-pointer", "swig-pointer-tag")) {
     scm_set_smob_print(swig_tag, print_swig);
