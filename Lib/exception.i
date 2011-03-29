@@ -57,6 +57,40 @@
 %}
 #endif
 
+#ifdef SWIGGUILE2
+%{
+  SWIGINTERN void SWIG_exception_ (int code, const char *msg,
+                               const char *subr) {
+#define ERROR(scmerr)					\
+	scm_error(scm_from_locale_string((char *) (scmerr)),	\
+		  (char *) subr, (char *) msg,		\
+		  SCM_EOL, SCM_BOOL_F)
+#define MAP(swigerr, scmerr)			\
+	case swigerr:				\
+	  ERROR(scmerr);			\
+	  break
+    switch (code) {
+      MAP(SWIG_MemoryError,	"swig-memory-error");
+      MAP(SWIG_IOError,		"swig-io-error");
+      MAP(SWIG_RuntimeError,	"swig-runtime-error");
+      MAP(SWIG_IndexError,	"swig-index-error");
+      MAP(SWIG_TypeError,	"swig-type-error");
+      MAP(SWIG_DivisionByZero,	"swig-division-by-zero");
+      MAP(SWIG_OverflowError,	"swig-overflow-error");
+      MAP(SWIG_SyntaxError,	"swig-syntax-error");
+      MAP(SWIG_ValueError,	"swig-value-error");
+      MAP(SWIG_SystemError,	"swig-system-error");
+    default:
+      ERROR("swig-error");
+    }
+#undef ERROR
+#undef MAP
+  }
+
+#define SWIG_exception(a,b) SWIG_exception_(a, b, FUNC_NAME)
+%}
+#endif
+
 #ifdef SWIGMZSCHEME
 
 %{

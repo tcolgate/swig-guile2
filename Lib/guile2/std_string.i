@@ -11,11 +11,11 @@
 // However, I think I'll wait until someone asks for it...
 // ------------------------------------------------------------------------
 
-%include <exception.i>
-
 %{
 #include <string>
+#include <stdexcept>
 %}
+%include <exception.i>
 
 namespace std {
 

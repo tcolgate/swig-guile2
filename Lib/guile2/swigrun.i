@@ -2,7 +2,7 @@
 
 %module swigrun
 
-#ifdef SWIGGUILE_SCM
+#ifdef SWIGGUILE2
 
 /* Hook the runtime module initialization
    into the shared initialization function SWIG_Guile_Init. */

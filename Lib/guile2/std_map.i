@@ -35,6 +35,7 @@
 #include <algorithm>
 #include <stdexcept>
 %}
+%include <exception.i>
 
 // exported class
 

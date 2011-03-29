@@ -15,7 +15,9 @@
 
 %{
 #include <utility>
+#include <stdexcept>
 %}
+%include <exception.i>
 
 // exported class
 

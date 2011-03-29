@@ -29,7 +29,7 @@
 }
 
 %typemap(varin) SWIGTYPE [ANY] {
-  void *temp;
+  $&1_ltype *temp;
   int ii;
   $1_basetype *b = 0;
   temp = SWIG_MustGetPtr($input, $1_descriptor, 1, 0);
@@ -55,7 +55,7 @@
 }
 
 %typemap(varout) SWIGTYPE & {
-  $result = SWIG_NewPointerObj((void *) &$1, $1_descriptor, 0);
+  $result = SWIG_NewPointerObj(($&1_ltype) &$1, $1_descriptor, 0);
 }
 
 %typemap(throws) SWIGTYPE {
@@ -151,7 +151,7 @@
    enums, which cannot be cast to. */
 %typemap(varin)  enum SWIGTYPE  {
   if (sizeof(int) != sizeof($1)) {
-    scm_error(scm_str2symbol("swig-error"),
+    scm_error(scm_from_locale_symbol("swig-error"),
 	      (char *) FUNC_NAME,
 	      (char *) "enum variable '$name' cannot be set",
 	      SCM_EOL, SCM_BOOL_F); 
@@ -358,28 +358,27 @@ typedef unsigned long SCM;
 #define %set_output(obj)                  $result = obj
 #define %set_varoutput(obj)               $result = obj
 #define %argument_fail(code, type, name, argn)	scm_wrong_type_arg((char *) FUNC_NAME, argn, $input);
-#define %as_voidptr(ptr)		(void*)(ptr)
 
 %typemap(in) SWIGTYPE (CLASS::*) {  
-  int res = SWIG_ConvertMember($input, %as_voidptr(&$1), sizeof($type),$descriptor);
+  int res = SWIG_ConvertMember($input, *($&1_ltype)$input;, sizeof($type),$descriptor);
   if (!SWIG_IsOK(res)) {
     %argument_fail(res,"$type",$symname, $argnum); 
   }
 }
 
 %typemap(out,noblock=1) SWIGTYPE (CLASS::*) {
-  %set_output(SWIG_NewMemberObj(%as_voidptr(&$1), sizeof($type), $descriptor));
+  %set_output(SWIG_NewMemberObj(*($&1_ltype)$input;, sizeof($type), $descriptor));
 }
 
 %typemap(varin) SWIGTYPE (CLASS::*) {
-  int res = SWIG_ConvertMember($input,%as_voidptr(&$1), sizeof($type), $descriptor);
+  int res = SWIG_ConvertMember($input,*($&1_ltype)$input;, sizeof($type), $descriptor);
   if (!SWIG_IsOK(res)) {
     scm_wrong_type_arg((char *) FUNC_NAME, 1, $input);
   }
 }
 
 %typemap(varout,noblock=1) SWIGTYPE (CLASS::*) {
-  %set_varoutput(SWIG_NewMemberObj(%as_voidptr(&$1), sizeof($type), $descriptor));
+  %set_varoutput(SWIG_NewMemberObj(*($&1_ltype)$input;, sizeof($type), $descriptor));
 }
 
 /* ------------------------------------------------------------
@@ -423,24 +422,24 @@ typedef unsigned long SCM;
 }
 
 %typecheck(SWIG_TYPECHECK_STRING) char * {
-  $1 = SCM_STRINGP($input) ? 1 : 0;
+  $1 = scm_string_p($input) ? 1 : 0;
 }
 
 %typecheck(SWIG_TYPECHECK_POINTER) SWIGTYPE *, SWIGTYPE &, SWIGTYPE [] {
-  void *ptr;
-  int res = SWIG_ConvertPtr($input, &ptr, $1_descriptor, 0);
+  $&1_ltype ptr;
+  int res = SWIG_ConvertPtr($input, (void**) &ptr, $1_descriptor, 0);
   $1 = SWIG_CheckState(res);
 }
 
 %typecheck(SWIG_TYPECHECK_POINTER) SWIGTYPE {
-  void *ptr;
-  int res = SWIG_ConvertPtr($input, &ptr, $&descriptor, 0);
+  $&1_ltype ptr;
+  int res = SWIG_ConvertPtr($input, (void**) &ptr, $&descriptor, 0);
   $1 = SWIG_CheckState(res);
 }
 
 %typecheck(SWIG_TYPECHECK_VOIDPTR) void * {
-  void *ptr;
-  int res = SWIG_ConvertPtr($input, &ptr, 0, 0);
+  $&1_ltype ptr;
+  int res = SWIG_ConvertPtr($input, (void**) &ptr, 0, 0);
   $1 = SWIG_CheckState(res);
 }
 
