@@ -29,7 +29,7 @@
 }
 
 %typemap(varin) SWIGTYPE [ANY] {
-  $&1_ltype *temp;
+  void *temp;
   int ii;
   $1_basetype *b = 0;
   temp = SWIG_MustGetPtr($input, $1_descriptor, 1, 0);
@@ -61,26 +61,22 @@
 %typemap(throws) SWIGTYPE {
   $&ltype temp = new $ltype($1);
   scm_throw(scm_take_locale_symbol((char *) "swig-exception"),
-	    scm_list(SWIG_NewPointerObj(temp, $&descriptor, 1),
-		    SCM_UNDEFINED));
+	    scm_list_1(SWIG_NewPointerObj(temp, $&descriptor, 1)));
 }
 
 %typemap(throws) SWIGTYPE & {
   scm_throw(scm_take_locale_symbol((char *) "swig-exception"),
-	    scm_list(SWIG_NewPointerObj(&$1, $descriptor, 1),
-		    SCM_UNDEFINED));
+	    scm_list_1(SWIG_NewPointerObj(&$1, $descriptor, 1)));
 }
 
 %typemap(throws) SWIGTYPE * {
   scm_throw(scm_take_locale_symbol((char *) "swig-exception"),
-	    scm_list(SWIG_NewPointerObj($1, $descriptor, 1),
-		    SCM_UNDEFINED));
+	    scm_list_1(SWIG_NewPointerObj($1, $descriptor, 1)));
 }
 
 %typemap(throws) SWIGTYPE [] {
   scm_throw(scm_take_locale_symbol((char *) "swig-exception"),
-	    scm_list(SWIG_NewPointerObj($1, $descriptor, 1),
-		    SCM_UNDEFINED));
+	    scm_list_1(SWIG_NewPointerObj($1, $descriptor, 1)D));
 }
 
 /* Change of object ownership, and interaction of destructor-like functions and the
@@ -162,7 +158,7 @@
 %typemap(varout) enum SWIGTYPE  { $result = scm_from_int($1); }
 %typemap(throws) enum SWIGTYPE {
   scm_throw(scm_take_locale_symbol((char *) "swig-exception"),
-     scm_list(scm_from_int($1), SCM_UNDEFINED));
+     scm_list_1(scm_from_int($1)));
 }
 
 /* The SIMPLE_MAP_WITH_EXPR macro below defines the whole set of
@@ -211,7 +207,7 @@
  %typemap(throws) C_NAME {
    C_NAME swig_c_value = $1;
    scm_throw(scm_take_locale_symbol((char *) "swig-exception"),
-	     scm_list(C_TO_SCM_EXPR, SCM_UNDEFINED));
+	     scm_list_1(C_TO_SCM_EXPR));
  }
 %enddef
 
@@ -255,7 +251,7 @@
  /* Throw typemap */
  %typemap(throws) C_NAME {
    scm_throw(scm_take_locale_symbol((char *) "swig-exception"),
-	     scm_list(C_TO_SCM($1), SCM_UNDEFINED));
+	     scm_list_1(C_TO_SCM($1)));
  }
 %enddef
 
@@ -326,7 +322,7 @@
 
 %typemap(throws) char * {
   scm_throw(scm_take_locale_symbol((char *) "swig-exception"),
-	    scm_list(scm_from_locale_string($1), SCM_UNDEFINED));
+	    scm_list_1(scm_from_locale_string($1)));
 }
 
 /* Void */
@@ -360,25 +356,25 @@ typedef unsigned long SCM;
 #define %argument_fail(code, type, name, argn)	scm_wrong_type_arg((char *) FUNC_NAME, argn, $input);
 
 %typemap(in) SWIGTYPE (CLASS::*) {  
-  int res = SWIG_ConvertMember($input, *($&1_ltype)$input;, sizeof($type),$descriptor);
+  int res = SWIG_ConvertMember($input, ($&1_ltype) &$1, sizeof($type),$descriptor);
   if (!SWIG_IsOK(res)) {
     %argument_fail(res,"$type",$symname, $argnum); 
   }
 }
 
 %typemap(out,noblock=1) SWIGTYPE (CLASS::*) {
-  %set_output(SWIG_NewMemberObj(*($&1_ltype)$input;, sizeof($type), $descriptor));
+  %set_output(SWIG_NewMemberObj(($&1_ltype)&$1, sizeof($type), $descriptor));
 }
 
 %typemap(varin) SWIGTYPE (CLASS::*) {
-  int res = SWIG_ConvertMember($input,*($&1_ltype)$input;, sizeof($type), $descriptor);
+  int res = SWIG_ConvertMember($input,($&1_ltype)&$1, sizeof($type), $descriptor);
   if (!SWIG_IsOK(res)) {
     scm_wrong_type_arg((char *) FUNC_NAME, 1, $input);
   }
 }
 
 %typemap(varout,noblock=1) SWIGTYPE (CLASS::*) {
-  %set_varoutput(SWIG_NewMemberObj(*($&1_ltype)$input;, sizeof($type), $descriptor));
+  %set_varoutput(SWIG_NewMemberObj(($&1_ltype)&$1, sizeof($type), $descriptor));
 }
 
 /* ------------------------------------------------------------
@@ -426,22 +422,24 @@ typedef unsigned long SCM;
 }
 
 %typecheck(SWIG_TYPECHECK_POINTER) SWIGTYPE *, SWIGTYPE &, SWIGTYPE [] {
-  $&1_ltype ptr;
-  int res = SWIG_ConvertPtr($input, (void**) &ptr, $1_descriptor, 0);
+  void *ptr;
+  int res = SWIG_ConvertPtr($input, &ptr, $1_descriptor, 0);
   $1 = SWIG_CheckState(res);
 }
 
 %typecheck(SWIG_TYPECHECK_POINTER) SWIGTYPE {
-  $&1_ltype ptr;
-  int res = SWIG_ConvertPtr($input, (void**) &ptr, $&descriptor, 0);
+  void *ptr;
+  int res = SWIG_ConvertPtr($input, &ptr, $&descriptor, 0);
   $1 = SWIG_CheckState(res);
 }
 
 %typecheck(SWIG_TYPECHECK_VOIDPTR) void * {
-  $&1_ltype ptr;
-  int res = SWIG_ConvertPtr($input, (void**) &ptr, 0, 0);
+  void *ptr;
+  int res = SWIG_ConvertPtr($input, &ptr, 0, 0);
   $1 = SWIG_CheckState(res);
 }
+
+
 
 /* Array reference typemaps */
 %apply SWIGTYPE & { SWIGTYPE ((&)[ANY]) }

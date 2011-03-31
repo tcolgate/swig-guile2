@@ -481,10 +481,6 @@ guile2_cpp: $(SRCS)
 	$(CXX) -c $(CCSHARED) $(CFLAGS) $(INCLUDES) $(GUILE2_INCLUDE) $(ICXXSRCS) $(SRCS) $(CXXSRCS)
 	$(CXXSHARED) $(CFLAGS) $(OBJS) $(IOBJS) $(LIBS) $(CPP_DLLIBS) -o $(GUILE2_LIBPREFIX)$(TARGET)$(GUILE2_SO)
 
-guile2_externalhdr:
-	$(SWIG) -guile2 -external-runtime $(TARGET)
-
-
 # -----------------------------------------------------------------
 # Cleaning the Guile2 examples
 # -----------------------------------------------------------------
