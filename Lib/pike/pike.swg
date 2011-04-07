@@ -237,33 +237,6 @@ extern "C" {
   $1 = ($input.type == T_STRING) ? 1 : 0;
 }
 
-%typecheck(SWIG_TYPECHECK_POINTER) SWIGTYPE *, SWIGTYPE &, SWIGTYPE [] {
-  void *ptr;
-  if (SWIG_ConvertPtr($input.u.object, (void **) &ptr, $1_descriptor, 0) == -1) {
-    $1 = 0;
-  } else {
-    $1 = 1;
-  }
-}
-
-%typecheck(SWIG_TYPECHECK_POINTER) SWIGTYPE {
-  void *ptr;
-  if (SWIG_ConvertPtr($input.u.object, (void **) &ptr, $&1_descriptor, 0) == -1) {
-    $1 = 0;
-  } else {
-    $1 = 1;
-  }
-}
-
-%typecheck(SWIG_TYPECHECK_VOIDPTR) void * {
-  void *ptr;
-  if (SWIG_ConvertPtr($input.u.object, (void **) &ptr, 0, 0) == -1) {
-    $1 = 0;
-  } else {
-    $1 = 1;
-  }
-}
-
 /* Array reference typemaps */
 %apply SWIGTYPE & { SWIGTYPE ((&)[ANY]) }
 

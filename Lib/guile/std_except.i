@@ -3,6 +3,7 @@
 %{
 #include <stdexcept>
 %}
+%include <exception.i>
 
 namespace std {
   %ignore exception;

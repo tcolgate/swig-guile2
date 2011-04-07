@@ -19,9 +19,7 @@ libtool
 ltmain.sh
 Makefile
 missing
-Makefile.in
 stamp-h1
-tests/Makefile.in
 tests/Makefile
 src/*.so
 src/*.o

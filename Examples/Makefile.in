@@ -87,7 +87,6 @@ OBJS      = $(SRCS:.c=.@OBJEXT@) $(CXXSRCS:.cxx=.@OBJEXT@)
 distclean:
 	rm -f Makefile
 	rm -f guile/Makefile
-	rm -f guile2/Makefile
 	rm -f xml/Makefile
 
 ##################################################################
@@ -373,8 +372,8 @@ octave_clean:
 ##################################################################
 
 # Make sure these locate your Guile installation
-GUILE_INCLUDE = @GUILEINCLUDE@
-GUILE_LIB     = @GUILELIB@
+GUILE_INCLUDE = @GUILECOMPILE@
+GUILE_LIB     = @GUILELINK@
 GUILE_SO      = @GUILE_SO@
 GUILE_LIBPREFIX = lib
 
@@ -382,113 +381,23 @@ GUILE_LIBPREFIX = lib
 # Build a dynamically loaded module with passive linkage and the scm interface
 #------------------------------------------------------------------
 guile: $(SRCS)
-	$(SWIG) -guile -scm -Linkage passive $(SWIGOPT) $(INTERFACEPATH)
-	$(CC) -c $(CCSHARED) $(CFLAGS) $(INCLUDES) $(GUILE_INCLUDE) $(ISRCS) $(SRCS)
-	$(LDSHARED) $(CFLAGS) $(OBJS) $(IOBJS) $(LIBS) -o $(GUILE_LIBPREFIX)$(TARGET)$(GUILE_SO)
-
-guile_cpp: $(SRCS)
-	$(SWIG) -c++ -guile -scm -Linkage passive $(SWIGOPT) $(INTERFACEPATH)
-	$(CXX) -c $(CCSHARED) $(CFLAGS) $(INCLUDES) $(GUILE_INCLUDE) $(ICXXSRCS) $(SRCS) $(CXXSRCS)
-	$(CXXSHARED) $(CFLAGS) $(OBJS) $(IOBJS) $(LIBS) $(CPP_DLLIBS) -o $(GUILE_LIBPREFIX)$(TARGET)$(GUILE_SO)
-
-guile_externalhdr:
-	$(SWIG) -guile -external-runtime $(TARGET)
-
-#------------------------------------------------------------------
-# Build a dynamically loaded module with passive linkage and the gh interface
-#------------------------------------------------------------------
-guile_gh: $(SRCS)
-	$(SWIG) -guile -gh -Linkage passive $(SWIGOPT) $(INTERFACEPATH)
-	$(CC) -c $(CCSHARED) $(CFLAGS) $(INCLUDES) $(GUILE_INCLUDE) $(ISRCS) $(SRCS)
-	$(LDSHARED) $(CFLAGS) $(OBJS) $(IOBJS) $(LIBS) -o $(GUILE_LIBPREFIX)$(TARGET)$(GUILE_SO)
-
-guile_gh_cpp: $(SRCS)
-	$(SWIG) -c++ -guile -gh -Linkage passive $(SWIGOPT) $(INTERFACEPATH)
-	$(CXX) -c $(CCSHARED) $(CFLAGS) $(INCLUDES) $(GUILE_INCLUDE) $(ICXXSRCS) $(SRCS) $(CXXSRCS)
-	$(CXXSHARED) $(CFLAGS) $(OBJS) $(IOBJS) $(LIBS) $(CPP_DLLIBS) -o $(GUILE_LIBPREFIX)$(TARGET)$(GUILE_SO)
-
-# -----------------------------------------------------------------
-# Build a dynamically loadable module with passive linkage
-# -----------------------------------------------------------------
-
-guile_passive: $(SRCS)
 	$(SWIG) -guile -Linkage passive $(SWIGOPT) $(INTERFACEPATH)
 	$(CC) -c $(CCSHARED) $(CFLAGS) $(INCLUDES) $(GUILE_INCLUDE) $(ISRCS) $(SRCS)
 	$(LDSHARED) $(CFLAGS) $(OBJS) $(IOBJS) $(LIBS) -o $(GUILE_LIBPREFIX)$(TARGET)$(GUILE_SO)
 
-guile_passive_cpp: $(SRCS)
+guile_cpp: $(SRCS)
 	$(SWIG) -c++ -guile -Linkage passive $(SWIGOPT) $(INTERFACEPATH)
 	$(CXX) -c $(CCSHARED) $(CFLAGS) $(INCLUDES) $(GUILE_INCLUDE) $(ICXXSRCS) $(SRCS) $(CXXSRCS)
 	$(CXXSHARED) $(CFLAGS) $(OBJS) $(IOBJS) $(LIBS) $(CPP_DLLIBS) -o $(GUILE_LIBPREFIX)$(TARGET)$(GUILE_SO)
 
 # -----------------------------------------------------------------
-# Build statically linked Guile interpreter
-# -----------------------------------------------------------------
-
-GUILE_LIBOPTS = @GUILELINK@ @LIBS@ $(SYSLIBS)
-
-guile_static: $(SRCS)
-	$(SWIG) -guile -lguilemain.i -Linkage ltdlmod $(SWIGOPT) $(INTERFACEPATH)
-	$(CC) $(CFLAGS) $(ISRCS) $(SRCS) $(INCLUDES) \
-	  -DSWIGINIT="SCM scm_init_$(TARGET)_module(void); scm_init_$(TARGET)_module();" \
-	  $(GUILE_INCLUDE) $(LIBS) -L$(GUILE_LIB) $(GUILE_LIBOPTS) -o $(TARGET)-guile
-
-guile_static_cpp: $(SRCS)
-	$(SWIG) -c++ -guile -lguilemain.i -Linkage ltdlmod $(SWIGOPT) $(INTERFACEPATH)
-	$(CXX) $(CFLAGS) $(ICXXSRCS) $(SRCS) $(CXXSRCS) $(INCLUDES) \
-	  -DSWIGINIT="SCM scm_init_$(TARGET)_module(void); scm_init_$(TARGET)_module();" \
-	  $(GUILE_INCLUDE) $(LIBS) -L$(GUILE_LIB) $(GUILE_LIBOPTS) -o $(TARGET)-guile
-
-guile_simple: $(SRCS)
-	$(SWIG) -guile -lguilemain.i -Linkage simple $(SWIGOPT) $(INTERFACEPATH)
-	$(CC) $(CFLAGS) $(ISRCS) $(SRCS) $(INCLUDES) \
-	  $(GUILE_INCLUDE) $(LIBS) -L$(GUILE_LIB) $(GUILE_LIBOPTS) -o $(TARGET)-guile
-
-guile_simple_cpp: $(SRCS)
-	$(SWIG) -c++ -guile -lguilemain.i -Linkage simple $(SWIGOPT) $(INTERFACEPATH)
-	$(CXX) $(CFLAGS) $(ICXXSRCS) $(SRCS) $(CXXSRCS) $(INCLUDES) \
-	  $(GUILE_INCLUDE) $(LIBS) -L$(GUILE_LIB) $(GUILE_LIBOPTS) -o $(TARGET)-guile
-
-# -----------------------------------------------------------------
-# Cleaning the Guile examples
+# Cleaning the Guile2 examples
 # -----------------------------------------------------------------
 
 guile_clean:
 	rm -f *_wrap* *~ .~* my-guile@EXEEXT@ $(TARGET)@EXEEXT@
 	rm -f core @EXTRA_CLEAN@
 	rm -f *.@OBJEXT@ *@GUILE_SO@
-
-##################################################################
-#####                       GUILE2                           ######
-##################################################################
-
-# Make sure these locate your Guile installation
-GUILE2_INCLUDE = @GUILE2COMPILE@
-GUILE2_LIB     = @GUILE2LINK@
-GUILE2_SO      = @GUILE2_SO@
-GUILE2_LIBPREFIX = lib
-
-#------------------------------------------------------------------
-# Build a dynamically loaded module with passive linkage and the scm interface
-#------------------------------------------------------------------
-guile2: $(SRCS)
-	$(SWIG) -guile2 -Linkage passive $(SWIGOPT) $(INTERFACEPATH)
-	$(CC) -c $(CCSHARED) $(CFLAGS) $(INCLUDES) $(GUILE2_INCLUDE) $(ISRCS) $(SRCS)
-	$(LDSHARED) $(CFLAGS) $(OBJS) $(IOBJS) $(LIBS) -o $(GUILE2_LIBPREFIX)$(TARGET)$(GUILE2_SO)
-
-guile2_cpp: $(SRCS)
-	$(SWIG) -c++ -guile2 -Linkage passive $(SWIGOPT) $(INTERFACEPATH)
-	$(CXX) -c $(CCSHARED) $(CFLAGS) $(INCLUDES) $(GUILE2_INCLUDE) $(ICXXSRCS) $(SRCS) $(CXXSRCS)
-	$(CXXSHARED) $(CFLAGS) $(OBJS) $(IOBJS) $(LIBS) $(CPP_DLLIBS) -o $(GUILE2_LIBPREFIX)$(TARGET)$(GUILE2_SO)
-
-# -----------------------------------------------------------------
-# Cleaning the Guile2 examples
-# -----------------------------------------------------------------
-
-guile2_clean:
-	rm -f *_wrap* *~ .~* my-guile2@EXEEXT@ $(TARGET)@EXEEXT@
-	rm -f core @EXTRA_CLEAN@
-	rm -f *.@OBJEXT@ *@GUILE2_SO@
 
 ##################################################################
 #####                       JAVA                            ######

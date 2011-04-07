@@ -58,9 +58,7 @@ skip-tcl	= test -n "@SKIP_TCL@"
 skip-perl5	= test -n "@SKIP_PERL5@"
 skip-python	= test -n "@SKIP_PYTHON@"
 skip-java	= test -n "@SKIP_JAVA@"
-skip-guilescm   = test -n "@SKIP_GUILESCM@"
 skip-guile	= test -n "@SKIP_GUILE@"
-skip-guile2	= test -n "@SKIP_GUILE2@"
 skip-mzscheme	= test -n "@SKIP_MZSCHEME@"
 skip-ruby	= test -n "@SKIP_RUBY@"
 skip-php	= test -n "@SKIP_PHP@"
@@ -102,7 +100,6 @@ check-aliveness:
 	@$(skip-python)   || ./$(TARGET) -python   -help
 	@$(skip-java)     || ./$(TARGET) -java     -help
 	@$(skip-guile)    || ./$(TARGET) -guile    -help
-	@$(skip-guile2)   || ./$(TARGET) -guile2   -help
 	@$(skip-mzscheme) || ./$(TARGET) -mzscheme -help
 	@$(skip-ruby)     || ./$(TARGET) -ruby     -help
 	@$(skip-ocaml)    || ./$(TARGET) -ocaml    -help
@@ -127,7 +124,6 @@ check-examples:					\
 	check-python-examples			\
 	check-java-examples			\
 	check-guile-examples			\
-	check-guile2-examples			\
 	check-mzscheme-examples			\
 	check-ruby-examples			\
 	check-ocaml-examples			\
@@ -151,7 +147,6 @@ perl5_examples     :=$(shell sed '/^\#/d' $(srcdir)/Examples/perl5/check.list)
 python_examples    :=$(shell sed '/^\#/d' $(srcdir)/Examples/python/check.list)
 java_examples      :=$(shell sed '/^\#/d' $(srcdir)/Examples/java/check.list)
 guile_examples     :=$(shell sed '/^\#/d' $(srcdir)/Examples/guile/check.list)
-guile2_examples    :=$(shell sed '/^\#/d' $(srcdir)/Examples/guile2/check.list)
 mzscheme_examples  :=$(shell sed '/^\#/d' $(srcdir)/Examples/mzscheme/check.list)
 ruby_examples      :=$(shell sed '/^\#/d' $(srcdir)/Examples/ruby/check.list)
 ocaml_examples     :=$(shell sed '/^\#/d' $(srcdir)/Examples/ocaml/check.list)
@@ -204,9 +199,7 @@ check-test-suite:				\
 	check-perl5-test-suite			\
 	check-python-test-suite			\
 	check-java-test-suite			\
-	check-guilescm-test-suite		\
 	check-guile-test-suite			\
-	check-guile2-test-suite			\
 	check-mzscheme-test-suite		\
 	check-ruby-test-suite			\
 	check-ocaml-test-suite			\
@@ -258,9 +251,7 @@ all-test-suite:					\
 	all-perl5-test-suite			\
 	all-python-test-suite			\
 	all-java-test-suite			\
-	all-guilescm-test-suite			\
 	all-guile-test-suite			\
-	all-guile2-test-suite			\
 	all-mzscheme-test-suite			\
 	all-ruby-test-suite			\
 	all-ocaml-test-suite			\
@@ -288,9 +279,7 @@ broken-test-suite:				\
 	broken-perl5-test-suite			\
 	broken-python-test-suite		\
 	broken-java-test-suite			\
-	broken-guilescm-test-suite		\
 	broken-guile-test-suite			\
-	broken-guile2-test-suite		\
 	broken-mzscheme-test-suite		\
 	broken-ruby-test-suite			\
 	broken-ocaml-test-suite			\
@@ -423,7 +412,7 @@ install-main:
 	@echo "Installing $(DESTDIR)$(BIN_DIR)/`echo $(TARGET_NOEXE) | sed '$(transform)'`@EXEEXT@"
 	@$(INSTALL_PROGRAM) $(TARGET) $(DESTDIR)$(BIN_DIR)/`echo $(TARGET_NOEXE) | sed '$(transform)'`@EXEEXT@
 
-lib-languages = gcj typemaps tcl perl5 python guile guile2 java mzscheme ruby php ocaml octave \
+lib-languages = gcj typemaps tcl perl5 python guile java mzscheme ruby php ocaml octave \
 	pike chicken csharp modula3 allegrocl clisp lua cffi uffi r go d
 
 lib-modules = std
