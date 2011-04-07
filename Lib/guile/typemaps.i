@@ -76,7 +76,7 @@
 
 %typemap(throws) SWIGTYPE [] {
   scm_throw(scm_take_locale_symbol((char *) "swig-exception"),
-	    scm_list_1(SWIG_NewPointerObj($1, $descriptor, 1)D));
+	    scm_list_1(SWIG_NewPointerObj($1, $descriptor, 1)));
 }
 
 /* Change of object ownership, and interaction of destructor-like functions and the
